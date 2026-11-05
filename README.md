@@ -8,7 +8,7 @@ These skills come from [MVPR](https://mvpr.io/r/kJwA7pjNhrI).
 
 | Skill | What it does |
 |---|---|
-| [`claude-code-onboarding`](skills/claude-code-onboarding) | A kind, step-by-step guide for people who have never used a terminal. It takes you from nothing to a live website: install Claude Code, learn plan mode and accept edits, design on an editable board, build with Astro, publish on Vercel. It ends with 2 projects: an editable report or deck (HTML, PDF and PowerPoint) and a database for large coverage, social and GEO data. |
+| [`claude-code-onboarding`](skills/claude-code-onboarding) | A kind, step-by-step guide for people who have never used a terminal. It takes you from nothing to a live website: install Claude Code, learn plan mode and accept edits, design on an editable board, build with Astro, publish on Vercel, and connect GitHub so your work is backed up. It ends with 2 projects: an editable report or deck (HTML, PDF and PowerPoint) and a database for large coverage, social and GEO data. |
 
 ## Start here if you are new (no technical skills needed)
 

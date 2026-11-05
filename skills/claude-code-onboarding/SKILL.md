@@ -15,6 +15,7 @@ By the end, the person will have:
 4. A simple website that they built with Astro, from that design.
 5. The website live on the internet with Vercel, at a web address they can share.
 6. A clear idea of where to look when something goes wrong.
+7. Their work saved on GitHub, so it is backed up and the site updates by itself each time they save.
 
 ## Your role: how to guide
 
@@ -531,11 +532,177 @@ Tip: `npx vercel` with no `--prod` makes a test copy at a different address. Ver
 Do not teach these now. Offer them.
 
 - **A custom address, like `mybusiness.com`.** Open https://vercel.com/dashboard, open the project, then Settings, then Domains. Buying a domain costs money. Vercel shows the price before they buy.
-- **Automatic updates with GitHub.** The site updates each time they save work to GitHub. They make an account at https://github.com/signup. Then ask Claude Code: `Help me put this project on GitHub and connect it to Vercel.`
+- **Automatic updates with GitHub.** The site updates each time they save work to GitHub. Part 8 sets this up: an account at https://github.com/signup, the `gh` tool, a private repo and the Vercel connection.
 - **More pages and features.** A blog, a gallery, a contact form. Ask Claude Code in plain words.
 - **Skills.** A skill teaches Claude Code one job, such as writing in their voice. Ask Claude Code: `How do I make a skill?`
 
-## Part 8 - Try a real project (after the site is live)
+## Part 8 - Connect GitHub (save your work in the cloud)
+
+Do this after the site is live. It takes about 15 minutes. Do not rush it. Many people find a GitHub account hard to set up. That is normal, and this part goes slowly. Assume the person knows nothing about GitHub.
+
+### 8a. What GitHub is, in plain words
+
+Tell the person this in your own friendly words:
+
+> GitHub is a free website where you keep your projects safe in the cloud. Think of it as Google Drive for websites, with a memory. Every time you save, it remembers that exact version. You can go back to any earlier version, even months later.
+
+Then say why it is worth the effort. Give these 5 reasons:
+
+1. **It is a backup.** If your laptop breaks or is lost, your website is safe.
+2. **It is an undo button for everything.** You can go back to any saved version, not only the last one.
+3. **Your website updates itself.** After you connect it to Vercel, each time you save to GitHub, Vercel puts the new version live. No more `npx vercel --prod`.
+4. **You can work with other people.** A friend or a colleague can see, suggest and add changes without breaking your site.
+5. **Claude Code can use it for you.** It can save your work, send it to GitHub and describe what changed. You do not need to remember any commands.
+
+Words they will hear:
+
+| Word | What it means |
+|---|---|
+| Repository ("repo") | Your project folder, stored on GitHub. |
+| Commit | A saved version of your project, with a short note. The same as a checkpoint in Part 4. |
+| Push | To send your saved versions from your computer to GitHub. |
+| Branch | A side copy of your project, for trying a change safely. The main one is called `main`. |
+| Pull request | A request to add a change from a branch into `main`, so someone can check it first. |
+
+### 8b. Make a GitHub account
+
+1. Open https://github.com/signup in a browser.
+2. Enter an email address, a password and a username. The username is public, so choose one that you are happy for clients to see. The free plan is all you need.
+3. GitHub shows a puzzle to prove you are a person. Solve it.
+4. GitHub sends a code to your email. Type the code in.
+5. Use a password manager, or write the password down and keep it safe. **Never paste a password into Claude.**
+
+Turn on a second lock (called two-factor sign-in). It stops other people from using your account:
+
+1. Open https://github.com/settings/security
+2. Click "Enable two-factor authentication".
+3. Follow the steps. An authenticator app is best. A text message also works.
+4. Save the recovery codes in a safe place.
+
+Find the private email address that GitHub gives you. It keeps your real email out of public view:
+
+1. Open https://github.com/settings/emails
+2. Tick "Keep my email addresses private".
+3. Copy the address that ends in `@users.noreply.github.com`. You need it in 8d.
+
+### 8c. Install the GitHub tool (called `gh`)
+
+The `gh` tool lets Claude Code work with GitHub. They do not need Homebrew.
+
+1. Open https://cli.github.com in a browser.
+2. Use the download button for your computer. Open the file and click through the installer. The default choices are right.
+3. **Close the terminal and open a new one.**
+4. Check the install:
+
+```bash
+gh --version
+```
+
+They should see a version number such as `gh version 2.89.0`. Any number is fine. If the terminal says `command not found: gh`, close the terminal, open a new one and try again.
+
+### 8d. Sign in to GitHub from the terminal
+
+```bash
+gh auth login
+```
+
+The terminal asks some questions. Use the arrow keys and Enter. Give these answers:
+
+| Question | Answer |
+|---|---|
+| Where do you use GitHub? | GitHub.com |
+| What is your preferred protocol? | HTTPS |
+| Authenticate Git with your GitHub credentials? | Yes |
+| How would you like to authenticate? | Login with a web browser |
+
+The terminal shows a short one-time code, such as `AB12-CD34`. It says "Press Enter to open github.com in your browser".
+
+1. Copy the code.
+2. Push Enter. A browser page opens. If it does not, open https://github.com/login/device
+3. Paste the code. Click "Continue", then "Authorize".
+4. Go back to the terminal. It says it is logged in.
+
+Warning: do not choose "Paste an authentication token". That is for experts. The browser way is safer.
+
+Check it worked:
+
+```bash
+gh auth status
+```
+
+They should see "Logged in to github.com". Next, tell Git who the person is. Use their real name and the private email from 8b:
+
+```bash
+git config --global user.name "Their Name"
+git config --global user.email "12345678+theirusername@users.noreply.github.com"
+```
+
+On a Mac, a pop-up may ask to install "command line developer tools". Click "Install", wait, then run the command again.
+
+### 8e. Put the website on GitHub
+
+Go to the website folder and start Claude Code:
+
+```bash
+cd ~/websites/my-first-site
+claude
+```
+
+Switch to plan mode (`Shift` and `Tab`) and say:
+
+```
+Check that no passwords, keys or private files are in this project.
+Save a checkpoint of everything. Then put this project on my GitHub as a PRIVATE repository called my-first-site.
+Show me the plan first.
+```
+
+Read the plan with the person. It must say **private**. Then switch to accept edits and approve. Claude runs commands like these:
+
+```bash
+git add -A
+git commit -m "Save my first website"
+gh repo create my-first-site --private --source . --remote origin --push
+```
+
+Astro already made a first save for them, and its `.gitignore` file already keeps `.env`, `node_modules` and `dist` out of GitHub. Claude should also check that `.vercel` is ignored.
+
+Check it: open https://github.com and look under "Your repositories". The person should see `my-first-site` with a lock icon (private). Click it. They see their files. Celebrate: their work is now backed up in the cloud.
+
+Rules for what goes on GitHub:
+
+- **Keep it private** unless the person truly wants the world to see it.
+- **Never push passwords, keys or a `.env` file.** Ask Claude to check before each push.
+- **Do not push client data or a database.** In `data-project` (Part 9, Project B), ask Claude to add `data/` and `*.db` to `.gitignore` before the first push.
+
+### 8f. Make Vercel update the site by itself
+
+Do this once. After it, each push to `main` puts the new site live.
+
+1. Open https://vercel.com/dashboard and click the project.
+2. Click "Settings", then "Git".
+3. Click "Connect Git Repository". Choose GitHub.
+4. If Vercel asks to install its GitHub app, click "Install". Choose **Only select repositories**, pick `my-first-site`, and click "Install".
+5. Choose `my-first-site` and click "Connect".
+
+Test it. Ask Claude Code: `Change the footer text to say the year is 2026. Then save a checkpoint and push it to GitHub.` After about a minute, the live site shows the change. The person did not run `npx vercel --prod`.
+
+### 8g. The everyday habit
+
+After any change they like, they say to Claude Code:
+
+```
+Save a checkpoint and push it to GitHub.
+```
+
+Tell them how it works:
+
+- A push to `main` makes the live site update.
+- To try something risky, say: `Make a new branch called redesign and work there.` The live site does not change until they say: `Merge redesign into main and push.`
+- To go back, say: `Show me my last 10 checkpoints.` Then say which one to go back to.
+
+Auto mode may refuse a push to `main`, because a push can start a live deploy. If that happens, nothing is broken. Type `! git push` in the prompt.
+
+## Part 9 - Try a real project (after the site is live)
 
 The person now knows the loop: plan mode, fix the plan, accept edits, build, check by hand. Offer these 2 projects. Let them choose 1. Both use the same loop. Do not start a project until the site is live.
 
@@ -621,6 +788,7 @@ Example questions:
 
 Rules for this project:
 
+- **Never push the data to GitHub.** Ask Claude to add `data/` and `*.db` to `.gitignore` before the first push (Part 8).
 - **Never put the database file in `public/`.** Everything in `public/` goes live on the internet. Keep the `.db` file and the CSV files in `data-project`, not in the website.
 - **Personal data.** Names and social handles are personal data. Only use data that you are allowed to use. Do not put personal data in a public report.
 - **Model size.** Plan the design on the largest model. Use the smallest model only for mechanical cleaning, such as renaming columns, and check its work.
@@ -651,6 +819,11 @@ Claude Code reads the error, finds the cause and usually fixes it. In chat mode,
 | http://localhost:4321 does not load | Make sure `npm run dev` is still running in a terminal window. Make sure the terminal is in the `my-first-site` folder. |
 | The design board is empty or lost its changes | Open it in the same browser as before. Or use "Load design.json" with the saved file. |
 | A pop-up asks for "developer tools" on a Mac | Click "Install". Wait. Run the command again. |
+| `command not found: gh` | Close the terminal and open a new one. If it still fails, run the installer from https://cli.github.com again. |
+| `gh auth login` shows no browser page | Open https://github.com/login/device yourself and type the code that the terminal shows. |
+| Git says "Please tell me who you are" | Run the two `git config --global` lines from Part 8d. |
+| A push is refused | Ask Claude Code: `The push was refused with this error:` and paste the error. It is often a sign-in problem, and `gh auth login` fixes it. |
+| GitHub asks for a password in the terminal | Stop. Run `gh auth login` and use the browser way. Never type your GitHub password into the terminal. |
 | `npm run build` shows an error | Paste the error to Claude Code and ask it to fix it. |
 | Vercel shows a login page to visitors | They shared a test link. Share the "Production" address. |
 | Claude changed something they dislike | Push `Esc`. Type `Undo that last change.` Or ask for the last checkpoint (Part 4). |
@@ -689,7 +862,8 @@ When the site is live, give the person a short summary:
 3. The commands they will use again: `claude`, `npm run dev`, `npm run build` and `npx vercel --prod`.
 4. The 3 modes to remember: Manual, Plan mode and Accept edits. `Shift` and `Tab` switches them. Also the 3 model sizes: Haiku, Sonnet and Opus.
 5. Where the design board is: `design/design-board.html` in the project folder.
-6. The 2 projects they can try next: an editable report or deck (Project A) and a database they can question (Project B).
-7. One small change to try tomorrow, for example: "Change the accent colour on the design board, then update the site."
+6. Their GitHub repo, and the habit: `Save a checkpoint and push it to GitHub.`
+7. The 2 projects they can try next: an editable report or deck (Project A) and a database they can question (Project B).
+8. One small change to try tomorrow, for example: "Change the accent colour on the design board, then update the site."
 
 Finish with a kind line, such as: "You designed a website, built it and put it on the internet. That is a real thing to be proud of."
