@@ -12,7 +12,7 @@ These skills come from [MVPR](https://mvpr.io/r/kJwA7pjNhrI).
 
 ## Start here if you are new (no technical skills needed)
 
-1. Download the starter ZIP: [Claude-Code-Starter.zip](https://github.com/tom-lawrence-mvpr/comms-skills/raw/main/downloads/Claude-Code-Starter.zip). Keep it in your Downloads folder.
+1. Download the starter ZIP: [Claude-Code-Starter.zip](https://raw.githubusercontent.com/tom-lawrence-mvpr/comms-skills/main/downloads/Claude-Code-Starter.zip). Keep it in your Downloads folder.
 2. Open Claude at https://claude.ai, or get the app at https://claude.ai/download.
 3. Start a new chat. Drag the ZIP into the message box.
 4. Type: `Please read this and guide me through getting started. Go one step at a time.`
