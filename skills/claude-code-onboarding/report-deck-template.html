@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Report deck</title>
+<!--
+  REPORT DECK - a one-file report or slide deck.
+  Click any text to change it. Change the numbers in the Data table and the chart updates.
+  Buttons at the top: Download HTML (keeps your edits), Download PDF, Download PowerPoint.
+  The PowerPoint button needs internet, because it loads one small helper library.
+  Change the colours and fonts in the :root block below. They use the same names as design-brief.md.
+-->
+<style>
+  :root {
+    --color-brand: #1f6f54; --color-accent: #e0a82e; --color-bg: #fbfaf7;
+    --color-surface: #ffffff; --color-text: #1d2421; --color-on-brand: #ffffff;
+    --font-heading: Georgia, "Times New Roman", serif;
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; background: #e9e6df; color: var(--color-text); font-family: var(--font-body); }
+  .toolbar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+             padding: 10px 16px; background: #ffffff; border-bottom: 1px solid #d9d5cc; }
+  .toolbar button { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 8px; border: 1px solid #c9c4b8;
+                    background: #f4f2ee; color: #1d2421; cursor: pointer; }
+  .toolbar button.primary { background: var(--color-brand); color: var(--color-on-brand); border-color: var(--color-brand); font-weight: 600; }
+  .toolbar button:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+  .toolbar .hint { font-size: 13px; color: #5b6560; margin-left: auto; }
+  #status { font-size: 13px; color: #5b6560; }
+  main { padding: 16px; }
+  .datapanel { max-width: 960px; margin: 0 auto 24px; background: #fff; border-radius: 12px; padding: 16px; border: 1px solid #d9d5cc; }
+  .datapanel h2 { margin: 0 0 4px; font-size: 18px; }
+  .datapanel p { margin: 0 0 12px; font-size: 14px; color: #5b6560; }
+  table { border-collapse: collapse; width: 100%; max-width: 480px; }
+  th, td { border: 1px solid #d9d5cc; padding: 6px 10px; text-align: left; font-size: 15px; }
+  th { background: #f4f2ee; }
+  td[contenteditable]:focus { outline: 2px solid var(--color-brand); }
+  .datapanel button { margin-top: 10px; font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 8px; border: 1px solid #c9c4b8; background: #f4f2ee; cursor: pointer; }
+
+  /* ===== Slides. All sizes use cqw so a slide scales on a phone and in print. ===== */
+  .slide { container-type: inline-size; width: 100%; max-width: 960px; aspect-ratio: 16 / 9; margin: 0 auto 24px;
+           background: var(--color-bg); border-radius: var(--radius); overflow: hidden; position: relative;
+           box-shadow: 0 4px 24px rgba(0,0,0,.12); }
+  .inner { position: absolute; inset: 0; padding: 6cqw 7cqw; display: flex; flex-direction: column; justify-content: center; gap: 2.4cqw; }
+  .slide h1, .slide h2, .slide h3 { font-family: var(--font-heading); margin: 0; line-height: 1.12; }
+  .slide h1 { font-size: 6.4cqw; } .slide h2 { font-size: 4.4cqw; } .slide h3 { font-size: 2.2cqw; }
+  .slide p, .slide li { font-size: 2.3cqw; line-height: 1.5; margin: 0; }
+  .slide ul { margin: 0; padding-left: 3cqw; display: grid; gap: 1.4cqw; }
+  .slide .sub { max-width: 60cqw; font-size: 2.6cqw; opacity: .85; }
+  .slide .kicker { font-size: 1.7cqw; letter-spacing: .12em; text-transform: uppercase; color: var(--color-accent); font-weight: 700; }
+  .slide.brand { background: var(--color-brand); color: var(--color-on-brand); }
+  .slide.brand .kicker { color: var(--color-accent); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4cqw; }
+  .stat { background: var(--color-surface); color: var(--color-text); border-radius: var(--radius); padding: 2.6cqw; border-top: .6cqw solid var(--color-accent); }
+  .stat .v { font-family: var(--font-heading); font-size: 5.4cqw; line-height: 1.05; color: var(--color-brand); }
+  .stat .l { font-size: 1.9cqw; margin-top: .8cqw; }
+  .chart { display: grid; gap: 1.5cqw; }
+  .bar-row { display: grid; grid-template-columns: 17cqw 1fr 8cqw; align-items: center; gap: 1.6cqw; font-size: 2cqw; }
+  .bar-track { height: 3cqw; background: color-mix(in srgb, var(--color-text) 10%, transparent); border-radius: 1cqw; overflow: hidden; }
+  .bar-fill { display: block; height: 100%; background: var(--color-brand); border-radius: 1cqw; }
+  .bar-val { text-align: right; font-weight: 700; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqw; }
+  .num { position: absolute; right: 3cqw; bottom: 2cqw; font-size: 1.5cqw; opacity: .55; }
+  [contenteditable]:hover { outline: 2px dashed var(--color-accent); outline-offset: 3px; cursor: text; }
+  [contenteditable]:focus { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+  /* ===== Print and PDF: 1 slide on each landscape page ===== */
+  @page { size: 13.333in 7.5in; margin: 0; }
+  @media print {
+    body { background: none; }
+    .toolbar, .datapanel { display: none !important; }
+    main { padding: 0; }
+    .slide { width: 13.333in; max-width: none; height: 7.5in; margin: 0; border-radius: 0; box-shadow: none; break-after: page; page-break-after: always; }
+    [contenteditable]:hover, [contenteditable]:focus { outline: none; }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar" role="toolbar" aria-label="Report tools">
+  <button class="primary" id="b-html">Download HTML</button>
+  <button id="b-pdf">Download PDF</button>
+  <button id="b-ppt">Download PowerPoint</button>
+  <span id="status" role="status"></span>
+  <span class="hint">Click any text to edit it.</span>
+</div>
+
+<main>
+  <section class="datapanel" aria-label="Data">
+    <h2>Data</h2>
+    <p>Change a number or a name here, and the chart on slide 3 updates. This panel is not printed.</p>
+    <table id="data">
+      <thead><tr><th>Outlet</th><th>Articles</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable="true">Financial Times</td><td contenteditable="true">24</td></tr>
+        <tr><td contenteditable="true">Sifted</td><td contenteditable="true">18</td></tr>
+        <tr><td contenteditable="true">City AM</td><td contenteditable="true">15</td></tr>
+        <tr><td contenteditable="true">Wired</td><td contenteditable="true">11</td></tr>
+        <tr><td contenteditable="true">TechCrunch</td><td contenteditable="true">7</td></tr>
+      </tbody>
+    </table>
+    <button id="add-row">Add a row</button>
+  </section>
+
+  <section class="slide brand" data-type="title">
+    <div class="inner">
+      <span class="kicker" contenteditable="true" data-line>Q4 PR report</span>
+      <h1 contenteditable="true" data-line>Coverage that moved the needle</h1>
+      <p class="sub" contenteditable="true">One sentence that says what this report shows and why it matters.</p>
+    </div>
+    <span class="num">1</span>
+  </section>
+
+  <section class="slide" data-type="stats">
+    <div class="inner">
+      <h2 contenteditable="true" data-line>The quarter in 3 numbers</h2>
+      <div class="stats">
+        <div class="stat"><div class="v" contenteditable="true" data-line>75</div><div class="l" contenteditable="true" data-line>articles published</div></div>
+        <div class="stat"><div class="v" contenteditable="true" data-line>12.4M</div><div class="l" contenteditable="true" data-line>total potential reach</div></div>
+        <div class="stat"><div class="v" contenteditable="true" data-line>68%</div><div class="l" contenteditable="true" data-line>positive sentiment</div></div>
+      </div>
+    </div>
+    <span class="num">2</span>
+  </section>
+
+  <section class="slide" data-type="chart">
+    <div class="inner">
+      <h2 contenteditable="true" data-line>Where the coverage came from</h2>
+      <div class="chart" id="chart"></div>
+    </div>
+    <span class="num">3</span>
+  </section>
+
+  <section class="slide" data-type="two">
+    <div class="inner">
+      <h2 contenteditable="true" data-line>What worked, and what did not</h2>
+      <div class="two">
+        <div><h3 contenteditable="true" data-line>Worked</h3>
+          <ul><li contenteditable="true" data-line>A short point about a win.</li><li contenteditable="true" data-line>Another short point.</li></ul></div>
+        <div><h3 contenteditable="true" data-line>Did not work</h3>
+          <ul><li contenteditable="true" data-line>A short point about a miss.</li><li contenteditable="true" data-line>Another short point.</li></ul></div>
+      </div>
+    </div>
+    <span class="num">4</span>
+  </section>
+
+  <section class="slide" data-type="list">
+    <div class="inner">
+      <h2 contenteditable="true" data-line>Next steps</h2>
+      <ul>
+        <li contenteditable="true" data-line>The first thing we will do, and by when.</li>
+        <li contenteditable="true" data-line>The second thing we will do, and by when.</li>
+        <li contenteditable="true" data-line>The third thing we will do, and by when.</li>
+      </ul>
+    </div>
+    <span class="num">5</span>
+  </section>
+
+  <section class="slide brand" data-type="end">
+    <div class="inner">
+      <h1 contenteditable="true" data-line>Thank you</h1>
+      <p class="sub" contenteditable="true" data-line>hello@example.com</p>
+    </div>
+    <span class="num">6</span>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function status(t) { $("#status").textContent = t; }
+  function txt(el) { return el ? el.innerText.replace(/\s+/g, " ").trim() : ""; }
+
+  /* ----- data and chart ----- */
+  function rows() {
+    return $$("#data tbody tr").map(function (tr) {
+      return { label: txt(tr.cells[0]), value: parseFloat(txt(tr.cells[1]).replace(/[^0-9.\-]/g, "")) || 0 };
+    }).filter(function (r) { return r.label; });
+  }
+  function drawChart() {
+    var r = rows(), max = Math.max.apply(null, [1].concat(r.map(function (x) { return x.value; })));
+    $("#chart").innerHTML = r.map(function (x) {
+      return '<div class="bar-row"><span>' + esc(x.label) + '</span><span class="bar-track"><span class="bar-fill" style="width:' +
+        (x.value / max * 100).toFixed(1) + '%"></span></span><span class="bar-val">' + esc(x.value) + "</span></div>";
+    }).join("");
+  }
+  document.addEventListener("input", function (e) { if (e.target.closest && e.target.closest("#data")) drawChart(); });
+  $("#add-row").addEventListener("click", function () {
+    var tb = $("#data tbody"), tr = document.createElement("tr");
+    tr.innerHTML = '<td contenteditable="true">New outlet</td><td contenteditable="true">5</td>';
+    tb.appendChild(tr); drawChart();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && e.target.hasAttribute && e.target.hasAttribute("data-line")) e.preventDefault();
+  });
+  document.addEventListener("paste", function (e) {
+    if (e.target.isContentEditable) {
+      e.preventDefault();
+      document.execCommand("insertText", false, (e.clipboardData || window.clipboardData).getData("text/plain"));
+    }
+  });
+
+  /* ----- downloads ----- */
+  function save(name, blob) {
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  $("#b-html").addEventListener("click", function () {
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    save("report.html", new Blob(["<!doctype html>\n" + document.documentElement.outerHTML], { type: "text/html" }));
+    status("report.html downloaded. It holds your edits.");
+  });
+  $("#b-pdf").addEventListener("click", function () {
+    status("In the print window, choose Save as PDF.");
+    window.print();
+  });
+
+  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim().replace("#", "").toUpperCase(); }
+  function fontFor(v) { return /georgia|serif/i.test(getComputedStyle(document.documentElement).getPropertyValue(v)) &&
+    !/system-ui/i.test(getComputedStyle(document.documentElement).getPropertyValue(v)) ? "Georgia" : "Arial"; }
+
+  function loadPptx() {
+    return new Promise(function (resolve, reject) {
+      if (window.PptxGenJS) return resolve();
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js";
+      s.onload = resolve; s.onerror = function () { reject(new Error("offline")); };
+      document.head.appendChild(s);
+    });
+  }
+  $("#b-ppt").addEventListener("click", function () {
+    status("Making the PowerPoint file...");
+    loadPptx().then(buildPptx).then(function () { status("report.pptx downloaded."); })
+      .catch(function (err) { status(err.message === "offline" ? "The PowerPoint button needs internet. Check your connection and try again." : "Could not make the PowerPoint: " + err.message); });
+  });
+
+  function buildPptx() {
+    var brand = cssVar("--color-brand"), accent = cssVar("--color-accent"), bg = cssVar("--color-bg"),
+        surface = cssVar("--color-surface"), text = cssVar("--color-text"), onBrand = cssVar("--color-on-brand");
+    var head = fontFor("--font-heading"), body = fontFor("--font-body");
+    var p = new window.PptxGenJS(); p.layout = "LAYOUT_WIDE"; // 13.33 x 7.5 inches
+    $$(".slide").forEach(function (sl) {
+      var s = p.addSlide(), type = sl.getAttribute("data-type"), dark = sl.classList.contains("brand");
+      s.background = { color: dark ? brand : bg };
+      var fg = dark ? onBrand : text;
+      if (type === "title") {
+        s.addText(txt($(".kicker", sl)).toUpperCase(), { x: .9, y: 2.0, w: 11.5, h: .4, fontFace: body, fontSize: 14, bold: true, color: accent, charSpacing: 3 });
+        s.addText(txt($("h1", sl)), { x: .9, y: 2.5, w: 11.5, h: 1.6, fontFace: head, fontSize: 48, color: fg, valign: "top" });
+        s.addText(txt($(".sub", sl)), { x: .9, y: 4.3, w: 9, h: 1.2, fontFace: body, fontSize: 20, color: fg, valign: "top" });
+      } else if (type === "end") {
+        s.addText(txt($("h1", sl)), { x: .9, y: 2.6, w: 11.5, h: 1.4, fontFace: head, fontSize: 54, color: fg });
+        s.addText(txt($(".sub", sl)), { x: .9, y: 4.1, w: 11.5, h: .8, fontFace: body, fontSize: 22, color: fg });
+      } else {
+        s.addText(txt($("h2", sl)), { x: .7, y: .5, w: 11.9, h: 1, fontFace: head, fontSize: 34, color: fg, valign: "top" });
+        if (type === "stats") {
+          $$(".stat", sl).forEach(function (st, i) {
+            var x = .7 + i * 4.05;
+            s.addShape(p.ShapeType.rect, { x: x, y: 2.0, w: 3.8, h: 2.6, fill: { color: surface }, line: { color: accent, width: 0 } });
+            s.addShape(p.ShapeType.rect, { x: x, y: 2.0, w: 3.8, h: .08, fill: { color: accent }, line: { color: accent, width: 0 } });
+            s.addText(txt($(".v", st)), { x: x + .25, y: 2.4, w: 3.3, h: 1.1, fontFace: head, fontSize: 40, color: brand, valign: "top" });
+            s.addText(txt($(".l", st)), { x: x + .25, y: 3.6, w: 3.3, h: .8, fontFace: body, fontSize: 16, color: text, valign: "top" });
+          });
+        } else if (type === "chart") {
+          var r = rows();
+          if (r.length) s.addChart(p.charts.BAR, [{ name: "Articles", labels: r.map(function (x) { return x.label; }), values: r.map(function (x) { return x.value; }) }],
+            { x: .7, y: 1.7, w: 11.9, h: 5.2, barDir: "bar", chartColors: [brand], showValue: true, dataLabelFontSize: 14,
+              catAxisLabelFontSize: 14, catAxisOrientation: "maxMin", valAxisHidden: true, valGridLine: { style: "none" }, showLegend: false });
+        } else if (type === "two") {
+          $$(".two > div", sl).forEach(function (col, i) {
+            var x = .7 + i * 6.2;
+            s.addText(txt($("h3", col)), { x: x, y: 1.9, w: 5.8, h: .6, fontFace: head, fontSize: 22, color: brand, bold: true });
+            s.addText($$("li", col).map(function (li) { return { text: txt(li), options: { bullet: true, breakLine: true } }; }),
+              { x: x, y: 2.6, w: 5.8, h: 3.5, fontFace: body, fontSize: 18, color: text, valign: "top", paraSpaceAfter: 8 });
+          });
+        } else if (type === "list") {
+          s.addText($$("li", sl).map(function (li) { return { text: txt(li), options: { bullet: true, breakLine: true } }; }),
+            { x: .9, y: 2.0, w: 11.5, h: 4.2, fontFace: body, fontSize: 22, color: text, valign: "top", paraSpaceAfter: 14 });
+        }
+      }
+    });
+    return p.writeFile({ fileName: "report.pptx" });
+  }
+
+  drawChart();
+})();
+</script>
+</body>
+</html>

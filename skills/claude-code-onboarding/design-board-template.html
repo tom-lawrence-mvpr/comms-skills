@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design board</title>
+<!--
+  DESIGN BOARD - a one-file design partner for an Astro website.
+  Click any text in the preview to edit it. Change colours, fonts and spacing on the left.
+  Your work saves in this browser. Use "Download design.json" to keep a copy, and
+  "Download brief" to give Claude Code the design to build in Astro.
+  No internet needed. No account needed.
+-->
+<style>
+  :root {
+    --ui-bg: #f4f2ee; --ui-panel: #ffffff; --ui-text: #1d2421; --ui-muted: #5b6560;
+    --ui-line: #d9d5cc; --ui-accent: #1f6f54; --ui-accent-text: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ui-bg: #14181a; --ui-panel: #1d2326; --ui-text: #eef1ef; --ui-muted: #a3aea8;
+      --ui-line: #34403b; --ui-accent: #5fc79f; --ui-accent-text: #0b1a14;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background: var(--ui-bg); color: var(--ui-text); }
+  .app { display: grid; grid-template-columns: 340px 1fr; min-height: 100vh; }
+  @media (max-width: 860px) { .app { grid-template-columns: 1fr; } }
+  aside { background: var(--ui-panel); border-right: 1px solid var(--ui-line); padding: 16px;
+          overflow-y: auto; max-height: 100vh; position: sticky; top: 0; }
+  @media (max-width: 860px) { aside { position: static; max-height: none; border-right: 0;
+          border-bottom: 1px solid var(--ui-line); } }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .hint { color: var(--ui-muted); font-size: 13px; margin: 0 0 12px; }
+  fieldset { border: 1px solid var(--ui-line); border-radius: 10px; margin: 0 0 12px; padding: 10px 12px 12px; }
+  legend { font-weight: 600; padding: 0 6px; font-size: 13px; }
+  label { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 8px 0; font-size: 14px; }
+  input[type=color] { width: 44px; height: 32px; border: 1px solid var(--ui-line); border-radius: 6px; padding: 2px; background: none; }
+  input[type=range] { width: 150px; }
+  select, input[type=text] { font: inherit; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--ui-line);
+         background: var(--ui-bg); color: var(--ui-text); max-width: 190px; }
+  button { font: inherit; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--ui-line);
+           background: var(--ui-bg); color: var(--ui-text); cursor: pointer; }
+  button.primary { background: var(--ui-accent); color: var(--ui-accent-text); border-color: var(--ui-accent); font-weight: 600; }
+  button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid var(--ui-accent); outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sec-row { display: flex; align-items: center; gap: 6px; margin: 6px 0; }
+  .sec-row span { flex: 1; }
+  .sec-row button { padding: 2px 8px; }
+  .check { display: flex; gap: 8px; align-items: center; font-size: 13px; margin: 4px 0; }
+  .pass { color: #1a7f4b; font-weight: 600; } .fail { color: #b3261e; font-weight: 600; }
+  @media (prefers-color-scheme: dark) { .pass { color: #6fdc9c; } .fail { color: #ff8a80; } }
+  details { margin: 0 0 12px; border: 1px solid var(--ui-line); border-radius: 10px; padding: 8px 12px; }
+  summary { cursor: pointer; font-weight: 600; font-size: 13px; }
+  details ul { margin: 8px 0 0; padding-left: 18px; font-size: 13px; }
+  details li { margin: 4px 0; }
+  textarea { width: 100%; height: 220px; font: 12px/1.4 ui-monospace, Menlo, monospace; background: var(--ui-bg);
+             color: var(--ui-text); border: 1px solid var(--ui-line); border-radius: 6px; padding: 8px; }
+  main { padding: 16px; overflow-x: auto; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .bar .spacer { flex: 1; }
+  #status { color: var(--ui-muted); font-size: 13px; }
+  .frame { margin: 0 auto; background: #fff; border: 1px solid var(--ui-line); border-radius: 12px;
+           overflow: hidden; transition: max-width .2s; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+
+  /* ===== The preview. It only uses the design tokens below. ===== */
+  #preview {
+    --color-brand: #1f6f54; --color-accent: #e0a82e; --color-bg: #fbfaf7;
+    --color-surface: #ffffff; --color-text: #1d2421;
+    --font-heading: system-ui, sans-serif; --font-body: system-ui, sans-serif;
+    --font-size-base: 18px; --space-unit: 8px; --radius: 12px; --color-on-brand: #fff;
+    background: var(--color-bg); color: var(--color-text);
+    font: var(--font-size-base)/1.6 var(--font-body);
+  }
+  #preview h1, #preview h2, #preview h3 { font-family: var(--font-heading); line-height: 1.15; margin: 0; }
+  #preview h1 { font-size: 2.6em; } #preview h2 { font-size: 1.7em; } #preview h3 { font-size: 1.15em; }
+  #preview p { margin: 0; max-width: 60ch; }
+  #preview .wrap { max-width: 960px; margin: 0 auto; padding: calc(var(--space-unit) * 8) calc(var(--space-unit) * 3); }
+  #preview .stack > * + * { margin-top: calc(var(--space-unit) * 2); }
+  #preview nav { display: flex; flex-wrap: wrap; gap: calc(var(--space-unit) * 2); align-items: center;
+                 justify-content: space-between; padding: calc(var(--space-unit) * 2) calc(var(--space-unit) * 3); }
+  #preview nav .brand { font-family: var(--font-heading); font-weight: 700; font-size: 1.15em; }
+  #preview nav .links { display: flex; gap: calc(var(--space-unit) * 2); }
+  #preview .btn { display: inline-block; background: var(--color-brand); color: var(--color-on-brand);
+                  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 3); border-radius: var(--radius);
+                  font-weight: 600; min-height: 44px; }
+  #preview .hero { background: var(--color-surface); }
+  #preview .grid { display: grid; gap: calc(var(--space-unit) * 3); grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  #preview .card { background: var(--color-surface); border-radius: var(--radius); padding: calc(var(--space-unit) * 3);
+                   border-top: 4px solid var(--color-accent); }
+  #preview .card > * + * { margin-top: var(--space-unit); }
+  #preview .alt { background: var(--color-surface); }
+  #preview footer { padding: calc(var(--space-unit) * 4) calc(var(--space-unit) * 3); text-align: center;
+                    border-top: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent); font-size: .85em; }
+  #preview [contenteditable]:hover { outline: 2px dashed var(--color-accent); outline-offset: 3px; cursor: text; }
+  #preview [contenteditable]:focus { outline: 2px solid var(--color-brand); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside aria-label="Design controls">
+    <h1>Design board</h1>
+    <p class="hint">Click any text in the preview to change it. Your work saves by itself in this browser.</p>
+
+    <details>
+      <summary>7 design rules to keep in mind</summary>
+      <ul>
+        <li><strong>One main job per page.</strong> One main button. Everything else is quieter.</li>
+        <li><strong>Make the important thing biggest.</strong> Size and space show what matters first.</li>
+        <li><strong>Use space.</strong> Empty space is not wasted. Crowded pages feel cheap.</li>
+        <li><strong>2 fonts at most.</strong> One for headings, one for text. Body text 16 to 20 px.</li>
+        <li><strong>Colour: 1 brand, 1 accent, calm neutrals.</strong> Mostly neutral, a little brand, a touch of accent.</li>
+        <li><strong>Make text easy to read.</strong> Strong contrast (the checks below), short lines, big tap targets.</li>
+        <li><strong>Phone first.</strong> Most visitors use a phone. Check the Phone view.</li>
+      </ul>
+    </details>
+
+    <fieldset><legend>Site</legend>
+      <label>Site name <input type="text" id="siteName"></label>
+    </fieldset>
+
+    <fieldset><legend>Colours</legend>
+      <label>Brand (main button) <input type="color" id="c-brand"></label>
+      <label>Accent (small touches) <input type="color" id="c-accent"></label>
+      <label>Page background <input type="color" id="c-bg"></label>
+      <label>Cards and panels <input type="color" id="c-surface"></label>
+      <label>Text <input type="color" id="c-text"></label>
+      <div id="checks" aria-live="polite"></div>
+    </fieldset>
+
+    <fieldset><legend>Type</legend>
+      <label>Headings <select id="f-heading"></select></label>
+      <label>Body text <select id="f-body"></select></label>
+      <label>Text size <input type="range" id="size" min="16" max="22" step="1"><output id="size-o"></output></label>
+    </fieldset>
+
+    <fieldset><legend>Space and shape</legend>
+      <label>Spacing <input type="range" id="space" min="6" max="12" step="1"><output id="space-o"></output></label>
+      <label>Corner roundness <input type="range" id="radius" min="0" max="28" step="2"><output id="radius-o"></output></label>
+    </fieldset>
+
+    <fieldset><legend>Sections (order and on/off)</legend>
+      <div id="sections"></div>
+    </fieldset>
+
+    <fieldset><legend>Save and share</legend>
+      <div class="row">
+        <button class="primary" id="dl-brief">Download brief</button>
+        <button id="copy-brief">Copy brief</button>
+        <button id="dl-json">Download design.json</button>
+        <button id="load-json">Load design.json</button>
+        <button id="reset">Start again</button>
+      </div>
+      <input type="file" id="file" accept="application/json,.json" hidden>
+    </fieldset>
+
+    <details>
+      <summary>See the brief that Claude Code will read</summary>
+      <textarea id="brief" readonly aria-label="Design brief"></textarea>
+    </details>
+  </aside>
+
+  <main>
+    <div class="bar">
+      <button id="v-desktop" class="primary" aria-pressed="true">Desktop</button>
+      <button id="v-phone" aria-pressed="false">Phone</button>
+      <span class="spacer"></span>
+      <span id="status" role="status"></span>
+    </div>
+    <div class="frame" id="frame"><div id="preview"></div></div>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var KEY = "design-board-v1";
+  var FONTS = {
+    "Modern sans":      'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+    "Classic serif":    'Georgia, "Times New Roman", serif',
+    "Editorial serif":  '"Iowan Old Style", "Palatino Linotype", Palatino, serif',
+    "Humanist sans":    '"Gill Sans", "Trebuchet MS", Calibri, sans-serif',
+    "Typewriter":       'ui-monospace, "SF Mono", Menlo, Consolas, monospace'
+  };
+  var SECTION_NAMES = { nav: "Menu", hero: "Top banner", features: "3 key points",
+                        about: "About", contact: "Contact", footer: "Footer" };
+  var DEFAULT = {
+    siteName: "My Site",
+    colors: { brand: "#1f6f54", accent: "#e0a82e", bg: "#fbfaf7", surface: "#ffffff", text: "#1d2421" },
+    fonts: { heading: "Classic serif", body: "Modern sans" },
+    size: 18, space: 8, radius: 12,
+    sections: [ {id:"nav",on:true},{id:"hero",on:true},{id:"features",on:true},
+                {id:"about",on:true},{id:"contact",on:true},{id:"footer",on:true} ],
+    copy: {
+      "nav.l1": "About", "nav.l2": "Services", "nav.l3": "Contact",
+      "hero.title": "A clear promise that a visitor understands in 5 seconds",
+      "hero.sub": "One or two short sentences. Say who this is for and what they get.",
+      "hero.cta": "Get in touch",
+      "ft.title": "What you can expect",
+      "ft.1.t": "Point one", "ft.1.d": "A short line that backs up the promise.",
+      "ft.2.t": "Point two", "ft.2.d": "A short line that backs up the promise.",
+      "ft.3.t": "Point three", "ft.3.d": "A short line that backs up the promise.",
+      "about.title": "About me", "about.body": "Write 2 or 3 friendly sentences about who you are and why you do this work.",
+      "contact.title": "Let's talk", "contact.body": "Tell visitors the one best way to reach you.", "contact.cta": "hello@example.com",
+      "footer.text": "© 2026 My Site"
+    }
+  };
+
+  var state;
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  function load() {
+    state = clone(DEFAULT);
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) merge(JSON.parse(raw));
+    } catch (e) { /* storage may be blocked: the board still works */ }
+  }
+  function merge(saved) {
+    if (!saved || typeof saved !== "object") return;
+    if (saved.siteName) state.siteName = saved.siteName;
+    ["colors", "fonts", "copy"].forEach(function (k) {
+      if (saved[k]) Object.keys(saved[k]).forEach(function (j) { state[k][j] = saved[k][j]; });
+    });
+    ["size", "space", "radius"].forEach(function (k) { if (typeof saved[k] === "number") state[k] = saved[k]; });
+    if (Array.isArray(saved.sections)) {
+      var ids = saved.sections.map(function (s) { return s.id; });
+      var ok = saved.sections.filter(function (s) { return SECTION_NAMES[s.id]; });
+      DEFAULT.sections.forEach(function (d) { if (ids.indexOf(d.id) < 0) ok.push(clone(d)); });
+      state.sections = ok;
+    }
+  }
+  var saveTimer;
+  function save(msg) {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); setStatus(msg || "Saved in this browser"); }
+      catch (e) { setStatus("Could not save here. Use Download design.json to keep your work."); }
+    }, 200);
+  }
+  function setStatus(t) { $("status").textContent = t; }
+
+  /* ----- colour maths: WCAG contrast ----- */
+  function lum(hex) {
+    var c = [1, 3, 5].map(function (i) {
+      var v = parseInt(hex.substr(i, 2), 16) / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+  function ratio(a, b) {
+    var l1 = lum(a), l2 = lum(b);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  }
+  function onBrand() { return ratio("#ffffff", state.colors.brand) >= ratio("#000000", state.colors.brand) ? "#ffffff" : "#000000"; }
+
+  function renderChecks() {
+    var c = state.colors;
+    var rows = [
+      ["Text on page", ratio(c.text, c.bg)],
+      ["Text on cards", ratio(c.text, c.surface)],
+      ["Button label", ratio(onBrand(), c.brand)]
+    ];
+    $("checks").innerHTML = rows.map(function (r) {
+      var ok = r[1] >= 4.5;
+      return '<div class="check"><span>' + r[0] + ':</span><span class="' + (ok ? "pass" : "fail") + '">' +
+        r[1].toFixed(1) + ' to 1 - ' + (ok ? "Easy to read" : "Too faint, change a colour") + "</span></div>";
+    }).join("");
+  }
+
+  /* ----- the preview ----- */
+  function E(key, tag, cls) {
+    return "<" + tag + (cls ? ' class="' + cls + '"' : "") + ' contenteditable="true" spellcheck="true" data-k="' + key + '">' +
+      esc(state.copy[key]) + "</" + tag + ">";
+  }
+  var TEMPLATES = {
+    nav: function () {
+      return '<nav><span class="brand" contenteditable="true" data-site="1">' + esc(state.siteName) + '</span>' +
+        '<span class="links">' + E("nav.l1", "span") + E("nav.l2", "span") + E("nav.l3", "span") + "</span></nav>";
+    },
+    hero: function () {
+      return '<section class="hero"><div class="wrap stack">' + E("hero.title", "h1") + E("hero.sub", "p") +
+        "<div>" + E("hero.cta", "span", "btn") + "</div></div></section>";
+    },
+    features: function () {
+      var cards = [1, 2, 3].map(function (n) {
+        return '<div class="card">' + E("ft." + n + ".t", "h3") + E("ft." + n + ".d", "p") + "</div>";
+      }).join("");
+      return '<section><div class="wrap stack">' + E("ft.title", "h2") + '<div class="grid">' + cards + "</div></div></section>";
+    },
+    about: function () {
+      return '<section class="alt"><div class="wrap stack">' + E("about.title", "h2") + E("about.body", "p") + "</div></section>";
+    },
+    contact: function () {
+      return '<section><div class="wrap stack">' + E("contact.title", "h2") + E("contact.body", "p") +
+        "<div>" + E("contact.cta", "span", "btn") + "</div></div></section>";
+    },
+    footer: function () { return "<footer>" + E("footer.text", "span") + "</footer>"; }
+  };
+
+  function applyTokens() {
+    var p = $("preview").style, c = state.colors;
+    p.setProperty("--color-brand", c.brand); p.setProperty("--color-accent", c.accent);
+    p.setProperty("--color-bg", c.bg); p.setProperty("--color-surface", c.surface);
+    p.setProperty("--color-text", c.text); p.setProperty("--color-on-brand", onBrand());
+    p.setProperty("--font-heading", FONTS[state.fonts.heading] || FONTS["Modern sans"]);
+    p.setProperty("--font-body", FONTS[state.fonts.body] || FONTS["Modern sans"]);
+    p.setProperty("--font-size-base", state.size + "px");
+    p.setProperty("--space-unit", state.space + "px");
+    p.setProperty("--radius", state.radius + "px");
+  }
+  function renderPreview() {
+    applyTokens();
+    $("preview").innerHTML = state.sections.filter(function (s) { return s.on; })
+      .map(function (s) { return TEMPLATES[s.id](); }).join("");
+  }
+  function renderSections() {
+    $("sections").innerHTML = state.sections.map(function (s, i) {
+      return '<div class="sec-row"><input type="checkbox" id="s-' + s.id + '"' + (s.on ? " checked" : "") +
+        ' aria-label="Show ' + SECTION_NAMES[s.id] + '"><span>' + SECTION_NAMES[s.id] + "</span>" +
+        '<button data-up="' + i + '" aria-label="Move ' + SECTION_NAMES[s.id] + ' up"' + (i === 0 ? " disabled" : "") + ">Up</button>" +
+        '<button data-down="' + i + '" aria-label="Move ' + SECTION_NAMES[s.id] + ' down"' + (i === state.sections.length - 1 ? " disabled" : "") + ">Down</button></div>";
+    }).join("");
+  }
+  function syncControls() {
+    $("siteName").value = state.siteName;
+    ["brand", "accent", "bg", "surface", "text"].forEach(function (k) { $("c-" + k).value = state.colors[k]; });
+    $("f-heading").value = state.fonts.heading; $("f-body").value = state.fonts.body;
+    $("size").value = state.size; $("size-o").textContent = state.size + " px";
+    $("space").value = state.space; $("space-o").textContent = state.space + " px";
+    $("radius").value = state.radius; $("radius-o").textContent = state.radius + " px";
+  }
+
+  /* ----- the brief for Claude Code ----- */
+  function brief() {
+    var c = state.colors, copy = state.copy;
+    var on = state.sections.filter(function (s) { return s.on; });
+    var lines = [];
+    lines.push("# Design brief: " + state.siteName, "");
+    lines.push("Build this design as an Astro website. Follow the tokens and the copy exactly.", "");
+    lines.push("## Design tokens", "", "Put these in `src/styles/global.css`:", "", "```css", ":root {",
+      "  --color-brand: " + c.brand + ";", "  --color-accent: " + c.accent + ";",
+      "  --color-bg: " + c.bg + ";", "  --color-surface: " + c.surface + ";", "  --color-text: " + c.text + ";",
+      "  --color-on-brand: " + onBrand() + ";",
+      "  --font-heading: " + (FONTS[state.fonts.heading] || FONTS["Modern sans"]) + ";",
+      "  --font-body: " + (FONTS[state.fonts.body] || FONTS["Modern sans"]) + ";",
+      "  --font-size-base: " + state.size + "px;", "  --space-unit: " + state.space + "px;",
+      "  --radius: " + state.radius + "px;", "}", "```", "");
+    lines.push("Spacing uses multiples of `--space-unit` (1, 2, 3, 4, 8). Heading sizes: h1 2.6em, h2 1.7em, h3 1.15em. Body line height 1.6. Text line length 60 characters at most.", "");
+    lines.push("## Sections, in order", "");
+    on.forEach(function (s, i) { lines.push((i + 1) + ". " + SECTION_NAMES[s.id] + " (`" + s.id + "`)"); });
+    lines.push("", "## Copy", "");
+    var groups = { nav: ["nav.l1", "nav.l2", "nav.l3"], hero: ["hero.title", "hero.sub", "hero.cta"],
+      features: ["ft.title", "ft.1.t", "ft.1.d", "ft.2.t", "ft.2.d", "ft.3.t", "ft.3.d"],
+      about: ["about.title", "about.body"], contact: ["contact.title", "contact.body", "contact.cta"], footer: ["footer.text"] };
+    on.forEach(function (s) {
+      lines.push("### " + SECTION_NAMES[s.id]);
+      if (s.id === "nav") lines.push("- Site name: " + state.siteName);
+      groups[s.id].forEach(function (k) { lines.push("- `" + k + "`: " + copy[k]); });
+      lines.push("");
+    });
+    lines.push("## Rules for the build", "",
+      "- Make 1 Astro component for each section in `src/components/`. Put them together in `src/pages/index.astro`.",
+      "- Use only the tokens above. Do not write a colour, font or size straight into a component.",
+      "- Build for a phone first. Then make it wider for a computer.",
+      "- Keep 1 main button on the page. The button label must keep strong contrast.",
+      "- Give every image a short `alt` text.",
+      "- Keep this file and `design.json` in the `design/` folder of the project.");
+    return lines.join("\n");
+  }
+  function renderBrief() { $("brief").value = brief(); }
+
+  function refresh(msg) { renderChecks(); renderBrief(); save(msg); }
+  function rebuildAll() { syncControls(); renderSections(); renderPreview(); refresh(); }
+
+  /* ----- events ----- */
+  function download(name, text, type) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type: type }));
+    a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function init() {
+    Object.keys(FONTS).forEach(function (n) {
+      ["f-heading", "f-body"].forEach(function (id) {
+        var o = document.createElement("option"); o.value = n; o.textContent = n; $(id).appendChild(o);
+      });
+    });
+    load(); rebuildAll();
+
+    $("siteName").addEventListener("input", function (e) { state.siteName = e.target.value; renderPreview(); refresh(); });
+    ["brand", "accent", "bg", "surface", "text"].forEach(function (k) {
+      $("c-" + k).addEventListener("input", function (e) { state.colors[k] = e.target.value; applyTokens(); refresh(); });
+    });
+    $("f-heading").addEventListener("change", function (e) { state.fonts.heading = e.target.value; applyTokens(); refresh(); });
+    $("f-body").addEventListener("change", function (e) { state.fonts.body = e.target.value; applyTokens(); refresh(); });
+    [["size", "size-o"], ["space", "space-o"], ["radius", "radius-o"]].forEach(function (p) {
+      $(p[0]).addEventListener("input", function (e) {
+        state[p[0]] = Number(e.target.value); $(p[1]).textContent = e.target.value + " px"; applyTokens(); refresh();
+      });
+    });
+    $("sections").addEventListener("click", function (e) {
+      var up = e.target.getAttribute("data-up"), down = e.target.getAttribute("data-down");
+      var i = up !== null ? Number(up) : down !== null ? Number(down) : null;
+      if (i === null) return;
+      var j = up !== null ? i - 1 : i + 1;
+      var t = state.sections[i]; state.sections[i] = state.sections[j]; state.sections[j] = t;
+      renderSections(); renderPreview(); refresh();
+    });
+    $("sections").addEventListener("change", function (e) {
+      var id = e.target.id.replace("s-", "");
+      state.sections.forEach(function (s) { if (s.id === id) s.on = e.target.checked; });
+      renderPreview(); refresh();
+    });
+    $("preview").addEventListener("input", function (e) {
+      var k = e.target.getAttribute("data-k");
+      if (k) { state.copy[k] = e.target.innerText.replace(/\s+/g, " ").trim(); renderBrief(); save(); }
+      else if (e.target.getAttribute("data-site")) {
+        state.siteName = e.target.innerText.trim(); $("siteName").value = state.siteName; renderBrief(); save();
+      }
+    });
+    $("preview").addEventListener("paste", function (e) {
+      e.preventDefault();
+      var t = (e.clipboardData || window.clipboardData).getData("text/plain");
+      document.execCommand("insertText", false, t);
+    });
+    $("preview").addEventListener("keydown", function (e) { if (e.key === "Enter") e.preventDefault(); });
+
+    $("v-desktop").addEventListener("click", function () { view(false); });
+    $("v-phone").addEventListener("click", function () { view(true); });
+    function view(phone) {
+      $("frame").style.maxWidth = phone ? "390px" : "none";
+      $("v-phone").classList.toggle("primary", phone); $("v-desktop").classList.toggle("primary", !phone);
+      $("v-phone").setAttribute("aria-pressed", String(phone)); $("v-desktop").setAttribute("aria-pressed", String(!phone));
+    }
+
+    $("dl-brief").addEventListener("click", function () { download("design-brief.md", brief(), "text/markdown"); setStatus("Brief downloaded"); });
+    $("dl-json").addEventListener("click", function () { download("design.json", JSON.stringify(state, null, 2), "application/json"); setStatus("design.json downloaded"); });
+    $("copy-brief").addEventListener("click", function () {
+      var ta = $("brief");
+      var done = function () { setStatus("Brief copied. Paste it into Claude Code."); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(brief()).then(done, function () { ta.select(); document.execCommand("copy"); done(); });
+      } else { ta.select(); document.execCommand("copy"); done(); }
+    });
+    $("load-json").addEventListener("click", function () { $("file").click(); });
+    $("file").addEventListener("change", function (e) {
+      var f = e.target.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        try { state = clone(DEFAULT); merge(JSON.parse(r.result)); rebuildAll(); setStatus("design.json loaded"); }
+        catch (err) { setStatus("That file could not be read. Is it a design.json file?"); }
+      };
+      r.readAsText(f); e.target.value = "";
+    });
+    $("reset").addEventListener("click", function () {
+      if (confirm("Start again? This clears your design in this browser. Download design.json first if you want a copy.")) {
+        state = clone(DEFAULT); rebuildAll(); setStatus("Started again");
+      }
+    });
+  }
+  init();
+})();
+</script>
+</body>
+</html>
